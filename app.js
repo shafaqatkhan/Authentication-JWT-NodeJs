@@ -6,6 +6,9 @@ const router = express.Router();
 const bodyParser = require('body-parser');
 const session = require('express-session');
 
+let jwt = require('jsonwebtoken');
+const config = require('./config.js');
+
 app.use(session({
 	secret: 'secret',
 	resave: true,
@@ -63,14 +66,32 @@ router.post('/auth',urlencoded,function(req,res){
   console.log("Authenticate user login id and password");
   var username = req.body.username;
   var password = req.body.password;
+
+  let user = "shafaqat";
+  let pass = 00000;
+
   if(username && password){
-    if(username == "shafaqat" && password == "12345") {
+    if(username == user && password == pass) {
       console.log("successfully login");
       req.session.loggedIn = true;
       //res.cookie("loggedIn",true);
+
+      let token = jwt.sign({username: username},
+        config.secret,
+        { expiresIn: '24h' // expires in 24 hours
+        }
+      );
+      // return the JWT token for the future API calls
+      console.log("Token = " + token );
+      res.json({
+        success: true,
+        message: 'Authentication successful!',
+        token: token
+      });
+
       res.redirect('/home');
     }else{
-      res.end("user name or password is inncorrect");
+      res.end("your user name or password is inncorrect");
     }
     
   } else {
@@ -82,5 +103,16 @@ router.post('/auth',urlencoded,function(req,res){
 app.use('/', router);
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+
+app.use(function(req,res,next){
+console.log("Express middlware called every time when http request gets call" + req.session.username);
+next();
+});
+
+router.get('/checking', (req, res) => {
+  res.json({
+     "Tutorial": "Welcome to the Node express JWT Tutorial"
+  });
+});
 
 app.listen(8000);
