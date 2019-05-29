@@ -19,7 +19,6 @@ router.get('/',function(req,res){
   } else {
     console.log("main page"  + req);
     res.sendFile(path.join(__dirname+'/index.html'));
-    //__dirname : It will resolve to your project folder.
   }
 });
 
