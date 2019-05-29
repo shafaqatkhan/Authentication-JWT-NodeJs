@@ -83,11 +83,11 @@ router.post('/auth',urlencoded,function(req,res){
       );
       // return the JWT token for the future API calls
       console.log("Token = " + token );
-      res.json({
-        success: true,
-        message: 'Authentication successful!',
-        token: token
-      });
+      // res.json({
+      //   success: true,
+      //   message: 'Authentication successful!',
+      //   token: token
+      // });
 
       res.redirect('/home');
     }else{
